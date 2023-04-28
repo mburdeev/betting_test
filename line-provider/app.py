@@ -114,6 +114,7 @@ async def send_event_to_channel(channel: aio_pika.abc.AbstractChannel, event: Ev
             body=msg,
             content_type="application/json",
             content_encoding="utf-8",
+            delivery_mode=aio_pika.DeliveryMode.PERSISTENT,
         ),
         routing_key=routing_key,
     )
