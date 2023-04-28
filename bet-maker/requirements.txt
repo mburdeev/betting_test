@@ -1,0 +1,18 @@
+# api
+fastapi
+uvicorn[standart]
+
+# general
+loguru
+
+# database
+sqlalchemy
+alembic
+asyncpg
+
+# rabbit-mq
+aio-pika
+
+# tests
+pytest-asyncio
+httpx

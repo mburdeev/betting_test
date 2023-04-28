@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  line-provider:
+    build: ./line-provider
+    container_name: line-provider
+    command: "uvicorn app:app --host 0.0.0.0 --port 8080"
+    ports:
+      - 8080:8080
+    depends_on:
+      - rabbit
+
+  bet-maker:
+    build: ./bet-maker
+    container_name: bet-maker
+    command: "uvicorn app.main:app --host 0.0.0.0 --port 8081"
+    volumes:
+      - ./bet-maker/:/code
+    ports:
+      - 8081:8081
+    depends_on:
+      - db
+      - rabbit
+
+  db:
+    image: postgres:15
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5434:5432
+
+  rabbit:
+    image: rabbitmq:3.11
+    hostname: rabbitmq
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=rabbitmq
+    ports:
+      - 15672:15672
+
+volumes:
+  postgres_data:
