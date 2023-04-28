@@ -126,6 +126,9 @@ async def on_startup():
     connection = await aio_pika.connect_robust(rabbitmq_url)
     async with connection:
         channel = await get_events_channel(connection)
+        # make sure the queue exists
+        queue = await channel.declare_queue(routing_key)
+        # send events
         tasks = [send_event_to_channel(channel, event) for event in event_list]
         await asyncio.gather(*tasks)
 
