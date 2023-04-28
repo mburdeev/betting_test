@@ -105,7 +105,7 @@ async def listen_events() -> None:
     async with connection:
         channel = await connection.channel()
         await channel.set_qos(prefetch_count=10)
-        queue = await channel.declare_queue(queue_name, auto_delete=True)
+        queue = await channel.declare_queue(queue_name)
 
         async with queue.iterator() as queue_iter:
             async for message in queue_iter:
