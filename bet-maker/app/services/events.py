@@ -8,6 +8,7 @@ from loguru import logger
 from app import schemas, services
 from app.db import models, session
 from app.services import utils
+from app.config import RABBITMQ_URL
 
 
 async def get_active_events(db: AsyncSession) -> list[models.Event]:
@@ -97,7 +98,7 @@ def parse_event(data: bytes) -> schemas.Event:
 
 
 async def listen_events() -> None:
-    connection = await aio_pika.connect_robust("amqp://rabbitmq:rabbitmq@rabbitmq/")
+    connection = await aio_pika.connect_robust(RABBITMQ_URL)
 
     queue_name = "events"
 
