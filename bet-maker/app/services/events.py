@@ -35,9 +35,9 @@ async def get_event_by_id(
     event = result.scalar()
 
     if must_be == True and event is None:
-        raise ValueError("The event is not store in db")
+        raise utils.NotInDB("Event", id=event_id)
     elif must_be == False and event is not None:
-        raise ValueError("The event is already stored")
+        raise utils.ContainsInDB("Event", id=event_id)
 
     return event
 
@@ -55,7 +55,7 @@ async def update_event(
 ) -> models.Event:
     # we cannot update closed events, this will lead to unexpected behavior
     if event.state != schemas.EventState.NEW:
-        raise ValueError("Event already closed")
+        raise utils.ConflictError("Event already closed")
     # update event status, close event
     elif event_update.state != schemas.EventState.NEW:
         if event_update.state == schemas.EventState.FINISHED_WIN:
